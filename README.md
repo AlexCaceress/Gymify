@@ -7,6 +7,9 @@
    - Control de los dias que has ido o no al gimansio
    - Recordatorios de los dias que tienes que hacer entrenamiento
 
+# Figma app design
+`https://www.figma.com/design/N6JI2OVSPqZzRmNk1JaQFc/Gymify?node-id=0-1&m=dev&t=wdDtQCjHfECDIXj6-1`
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
