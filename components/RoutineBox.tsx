@@ -5,7 +5,16 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 
-const RoutineBox = () => {
+type Props = {
+    options : {
+        id : string
+        name : string,
+        days : number,
+    }
+    navigateToRoutine? : () => void
+}
+
+const RoutineBox = ({options, navigateToRoutine} : Props) => {
     return (
         <View style={styles.container}>
             <Image source={PlaceholderImage} style={styles.image} />

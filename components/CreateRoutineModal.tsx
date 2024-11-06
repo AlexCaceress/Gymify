@@ -3,6 +3,8 @@ import { PropsWithChildren, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native';
+import CheckBox from './CheckBox';
+import CheckBoxDaysList from './CheckBoxDaysList';
 
 type Props = PropsWithChildren<{
     isVisible: boolean;
@@ -14,6 +16,51 @@ const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 export default function CreateRoutineModal({ isVisible, onClose }: Props) {
 
     const [nameRoutine, setNameRoutine] = useState<string | undefined>(undefined);
+
+    const aviableOptions = [
+        {
+            id: "1",
+            nameDay: "M"
+        },
+        {
+            id: "2",
+            nameDay: "T"
+        },
+        {
+            id: "3",
+            nameDay: "W"
+        },
+        {
+            id: "4",
+            nameDay: "T"
+        },
+        {
+            id: "5",
+            nameDay: "F"
+        },
+        {
+            id: "6",
+            nameDay: "S"
+        },
+        {
+            id: "7",
+            nameDay: "S"
+        },
+    ]
+
+    const [selected, setSelected] = useState<string[]>([]);
+
+    const onPressCheckbox = (id: string) => {
+        
+        if (selected.includes(id)) {
+            const newSelected = selected.filter(item => item != id);
+            setSelected(newSelected)
+        } else {
+            const result = [...selected, id]
+            setSelected(result);
+        }
+
+    }
 
     return (
         <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -30,7 +77,7 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
                             <Text style={{ color: "#fff", fontSize: 14, fontWeight: "bold" }}>Change Picture</Text>
                         </View>
                         <View style={styles.inputsContainer}>
-                            <View style={[styles.inputSection, {flex : 1/2}]}>
+                            <View style={[styles.inputSection, { flex: 1 / 2 }]}>
                                 <Text style={styles.title}>Name Routine</Text>
                                 <TextInput
                                     style={styles.input}
@@ -40,11 +87,10 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
                             </View>
                             <View style={styles.inputSection}>
                                 <Text style={styles.title}>Days Routine</Text>
+
+                                <CheckBoxDaysList options={aviableOptions} selectedOption={selected} onPressCheckbox={onPressCheckbox} />
                             </View>
                         </View>
-                    </View>
-                    <View>
-
                     </View>
                 </LinearGradient>
             </TouchableWithoutFeedback>
@@ -89,7 +135,7 @@ const styles = StyleSheet.create({
         paddingTop: 70,
     },
     inputSection: {
-        flex : 1,
+        flex: 1,
         gap: 20,
         alignItems: "center"
     },

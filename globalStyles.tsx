@@ -5,6 +5,11 @@ const globalStyles = StyleSheet.create({
         backgroundColor: "#25292E",
         flex: 1
     },
+    title : {
+        fontSize : 20,
+        fontWeight : "bold",
+        color : "#fff"
+    }
 })
 
 export default globalStyles;
