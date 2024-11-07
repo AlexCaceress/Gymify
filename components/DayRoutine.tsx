@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, Image, ScrollView, Pressable } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import globalStyles from '@/globalStyles'
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import AddExerciseModal from './AddExerciseModal';
 
 type Props = {
     day: string
@@ -12,6 +13,18 @@ type Props = {
 const PlaceholderImage = require('@/assets/images/biceps.png');
 
 const DayRoutine = ({ day }: Props) => {
+
+    const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
+
+
+    const onModalOpen = () => {
+        setModalCreateVisible(true);
+    };
+
+    const onModalClose = () => {
+        setModalCreateVisible(false);
+    };
+
     return (
         <View style={styles.container}>
             <Text style={globalStyles.title}>{day}</Text>
@@ -26,7 +39,7 @@ const DayRoutine = ({ day }: Props) => {
                         <Text style={styles.repsText}>4x10</Text>
                     </View>
 
-                    <Pressable style={styles.addButton}>
+                    <Pressable style={styles.addButton} onPress={onModalOpen}>
                         <FontAwesome6 name="add" size={32} color="white" />
                     </Pressable>
 
@@ -36,6 +49,8 @@ const DayRoutine = ({ day }: Props) => {
                 <AntDesign name="playcircleo" size={32} color="white" />
                 <Feather name="settings" size={32} color="white" />
             </View>
+            <AddExerciseModal isVisible={modalCreateVisible} onClose={onModalClose}>
+            </AddExerciseModal>
         </View>
     )
 }
@@ -71,13 +86,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "flex-end"
     },
-    addButton : {
+    addButton: {
         width: 100,
         height: 100,
         borderRadius: 10,
-        alignItems : "center",
-        justifyContent : "center",
-        backgroundColor : "#414345"
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#414345"
     }
 
 })

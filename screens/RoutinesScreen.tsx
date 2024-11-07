@@ -14,7 +14,7 @@ const RoutinesScreen = () => {
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
 
 
-    const onAddSticker = () => {
+    const onModalOpen = () => {
         setModalCreateVisible(true);
     };
 
@@ -68,7 +68,7 @@ const RoutinesScreen = () => {
                 <Text style={styles.title}>Your Routines</Text>
                 <View style={styles.icons}>
                     <MaterialIcons name="search" size={32} color="white" />
-                    <AntDesign name="pluscircleo" size={26} color="white" onPress={onAddSticker} />
+                    <AntDesign name="pluscircleo" size={26} color="white" onPress={onModalOpen} />
                 </View>
             </View>
             <ScrollView>

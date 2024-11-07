@@ -3,8 +3,8 @@ import { PropsWithChildren, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native';
-import CheckBox from './CheckBox';
 import CheckBoxDaysList from './CheckBoxDaysList';
+import globalStyles from '@/globalStyles';
 
 type Props = PropsWithChildren<{
     isVisible: boolean;
@@ -65,7 +65,7 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
     return (
         <Modal animationType="slide" transparent={true} visible={isVisible}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <LinearGradient colors={['#414345', '#232526']} style={styles.modalContent}>
+                <LinearGradient colors={['#414345', '#232526']} style={globalStyles.modalContent}>
                     <View style={{ alignItems: "flex-end" }}>
                         <Pressable onPress={onClose}>
                             <MaterialIcons name="close" color="#fff" size={32} />
@@ -99,18 +99,6 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-    modalContent: {
-        height: '92%',
-        width: '100%',
-        backgroundColor: '#25292e',
-        borderTopRightRadius: 18,
-        borderTopLeftRadius: 18,
-        position: 'absolute',
-        bottom: 0,
-        padding: 10,
-        borderTopEndRadius: 30,
-        borderTopStartRadius: 30,
-    },
     title: {
         color: '#fff',
         fontSize: 24,
