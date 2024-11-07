@@ -1,12 +1,3 @@
-# Concepto
-   - Aplicacion movil en local
-   - Creación de tus rutinas:
-      - Poder editar, crear o eliminar
-      - Modo rutina --> Modo en que la rutina esta activa y puedes marcar como hecho los ejercicios
-      - Si finalizas una rutina podras ver en el calendario que ese dia no has fallado
-   - Control de los dias que has ido o no al gimansio
-   - Recordatorios de los dias que tienes que hacer entrenamiento
-
 # Figma app design
 `https://www.figma.com/design/N6JI2OVSPqZzRmNk1JaQFc/Gymify?node-id=0-1&m=dev&t=wdDtQCjHfECDIXj6-1`
 
