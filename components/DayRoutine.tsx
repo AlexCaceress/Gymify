@@ -25,8 +25,11 @@ const DayRoutine = ({ options }: Props) => {
 
         if (exercise) {
 
-            let newDay = { ...day };
-            newDay.exercises.push(exercise);
+            let newDay = {
+                ...day,
+                exercises: [...day.exercises, exercise]
+            };
+            
             setDay(newDay);
 
         }
