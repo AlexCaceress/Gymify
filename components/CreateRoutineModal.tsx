@@ -5,50 +5,51 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native';
 import CheckBoxDaysList from './CheckBoxDaysList';
 import globalStyles from '@/globalStyles';
+import { Routine } from '@/app/AppContext';
+import { ModalRoutineData } from '@/screens/RoutinesScreen';
 
 type Props = PropsWithChildren<{
     isVisible: boolean;
-    onClose: () => void;
+    onClose: (data? : ModalRoutineData) => void;
 }>;
 
 const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 
 export default function CreateRoutineModal({ isVisible, onClose }: Props) {
 
-    const [nameRoutine, setNameRoutine] = useState<string | undefined>(undefined);
+    const [nameRoutine, setNameRoutine] = useState<string>("");
+    const [selected, setSelected] = useState<string[]>([]);
 
     const aviableOptions = [
         {
-            id: "1",
+            id: "Monday",
             nameDay: "M"
         },
         {
-            id: "2",
+            id: "Tuesday",
             nameDay: "T"
         },
         {
-            id: "3",
+            id: "Wednesday",
             nameDay: "W"
         },
         {
-            id: "4",
+            id: "Thursday",
             nameDay: "T"
         },
         {
-            id: "5",
+            id: "Friday",
             nameDay: "F"
         },
         {
-            id: "6",
+            id: "Saturday",
             nameDay: "S"
         },
         {
-            id: "7",
+            id: "Sunday",
             nameDay: "S"
         },
     ]
-
-    const [selected, setSelected] = useState<string[]>([]);
 
     const onPressCheckbox = (id: string) => {
         
@@ -62,12 +63,25 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
 
     }
 
+    const closeModal = () => {
+
+        let data : ModalRoutineData | undefined = undefined
+
+        if(nameRoutine && selected.length > 0){
+            data = {name : nameRoutine, numDays : selected.length, selections : selected}
+        }
+
+        onClose(data);
+        setNameRoutine("");
+        setSelected([]);
+    }
+
     return (
         <Modal animationType="slide" transparent={true} visible={isVisible}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <LinearGradient colors={['#414345', '#232526']} style={globalStyles.modalContent}>
                     <View style={{ alignItems: "flex-end" }}>
-                        <Pressable onPress={onClose}>
+                        <Pressable onPress={closeModal}>
                             <MaterialIcons name="close" color="#fff" size={32} />
                         </Pressable>
                     </View>

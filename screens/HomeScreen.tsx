@@ -1,13 +1,21 @@
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import globalStyles from '@/globalStyles'
 import { SafeAreaView } from 'react-native'
 import { Pressable } from 'react-native'
 import Button from '@/components/Button'
+import { useAppContext } from '@/app/AppContext'
 
 const PlaceholderImage = require('@/assets/images/Grupos_Musculares/pectoral.png');
 
 const HomeScreen = () => {
+
+    const { data, storeData } = useAppContext();
+
+    useEffect(() => {
+        console.log("Estado actual desde home:", data);
+    }, [data]);
+
     return (
         <SafeAreaView style={globalStyles.container}>
             <Text style={styles.title}>Monday's Routine</Text>

@@ -1,58 +1,73 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type Exercise = {
-  id : string,
-  series : string
+  id: string,
+  series: string
 }
 
 export type Day = {
-  name : string,
-  exercises : Exercise[]
+  name: string,
+  exercises: Exercise[]
 }
 
 export type Routine = {
-  id : string,
-  numDays : number,
-  days? : Day[]
-} 
+  id: string,
+  name: string
+  numDays: number,
+  days?: Day[]
+}
 
-// let prova_rutina : Routine = {id : "1", numDays : 4}
-
-// Recordar que tens que pasar una array de rutinas
-// Tambe mirar si existeix en el storage el objecte Routines
-// Posar valor default
-// Crear clase per poder modificar aquest objecte routines: crear, eliminar y editar rutines
-
-export const AppContext = createContext<Routine[] | undefined>(undefined);
-
-export function useAppContext() {
-
-  const routines = useContext(AppContext);
-
-  if(routines === undefined){
-    throw new Error("useAppContext is undefined")
-  }
-
-  return routines;
+interface AppContextType {
+  data: Routine[],
+  storeData: (data: Routine[]) => void,
 
 }
 
-export const storeData = async (value : Routine[]) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem('my-key', jsonValue);
-  } catch (e) {
-    // saving error
-  }
-};
+const AppContext = createContext<AppContextType>({
+  data: [],
+  storeData: () => { },
+});
 
-export const getData = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem('my-key');
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    // error reading value
-  }
-};
+export const AppProvider = ({ children }: any) => {
 
+  const [data, setData] = useState<Routine[]>([]);
+
+  useEffect(() => {
+
+    const loadData = async () => {
+      const items = await getData();
+      if (items !== null) setData(items)
+    }
+
+    loadData();
+
+  }, []);
+
+  const storeData = async (value: Routine[]) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      setData(value);
+      await AsyncStorage.setItem('routines', jsonValue);
+    } catch (e) {
+      console.error("No se ha podido cargar los datos al almacenamiento")
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('routines');
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.error("No se ha podido descargar los datos")
+    }
+  };
+
+  return (
+    <AppContext.Provider value={{ data, storeData }}>
+      {children}
+    </AppContext.Provider>
+  )
+}
+
+export const useAppContext = () => useContext(AppContext);

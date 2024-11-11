@@ -2,28 +2,24 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Routine } from '@/app/AppContext';
 
 const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 
 type Props = {
-    options : {
-        id : string
-        name : string,
-        days : number,
-    }
-    navigateToRoutine? : () => void
+    options : Routine
 }
 
-const RoutineBox = ({options, navigateToRoutine} : Props) => {
+const RoutineBox = ({options} : Props) => {
     return (
         <View style={styles.container}>
             <Image source={PlaceholderImage} style={styles.image} />
             <View style={styles.infoRoutine}>
                 <View style={{ flexDirection : "row", justifyContent : "space-between" }}>
-                    <Text style={styles.title}>Push Pull Leg</Text>
+                    <Text style={styles.title}>{options.name}</Text>
                     <MaterialIcons name="more-vert" size={24} color="white" />
                 </View>
-                <Text style={{color : "#fff"}}>4 days</Text>
+                <Text style={{color : "#fff"}}>{options.numDays} days</Text>
             </View>
         </View>
     )

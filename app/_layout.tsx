@@ -1,18 +1,13 @@
 import { Stack } from "expo-router";
-import { AppContext, useAppContext } from "./AppContext";
-import { useContext } from "react";
+import { AppProvider } from "./AppContext";
 
 export default function RootLayout() {
-
-  const appContext = useAppContext();
-
-
   return (
-    <AppContext.Provider value={appContext}>
+    <AppProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="routine" options={{ headerShown: false }} />
       </Stack>
-    </AppContext.Provider>
+    </AppProvider>
   );
 }

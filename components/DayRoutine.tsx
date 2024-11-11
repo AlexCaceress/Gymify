@@ -5,9 +5,10 @@ import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AddExerciseModal from './AddExerciseModal';
+import { Day } from '@/app/AppContext';
 
 type Props = {
-    day: string
+    day: Day
 }
 
 const PlaceholderImage = require('@/assets/images/biceps.png');
@@ -15,7 +16,6 @@ const PlaceholderImage = require('@/assets/images/biceps.png');
 const DayRoutine = ({ day }: Props) => {
 
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
-
 
     const onModalOpen = () => {
         setModalCreateVisible(true);
@@ -27,7 +27,7 @@ const DayRoutine = ({ day }: Props) => {
 
     return (
         <View style={styles.container}>
-            <Text style={globalStyles.title}>{day}</Text>
+            <Text style={globalStyles.title}>{day.name}</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View style={styles.routineContianer}>
                     <View style={styles.exerciceContainer}>

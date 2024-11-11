@@ -1,64 +1,54 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Button from '@/components/Button';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import RoutineBox from '@/components/RoutineBox';
 import CreateRoutineModal from '@/components/CreateRoutineModal';
 import { router } from 'expo-router';
+import { Routine, useAppContext } from '@/app/AppContext';
+
+export type ModalRoutineData = {
+    name : string,
+    numDays : number,
+    selections : string[]
+}
 
 const RoutinesScreen = () => {
 
-    const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
+    const { data, storeData } = useAppContext();
 
+    useEffect(() => {
+        console.log("Estado actual desde rutinas:", data);
+    }, [data]);
+
+    const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
 
     const onModalOpen = () => {
         setModalCreateVisible(true);
     };
 
-    const onModalClose = () => {
+    const onModalClose = (routine?: ModalRoutineData) => {
+
+        if(routine){
+
+            let newRoutine : Routine = {
+                id : (data.length + 1).toString(),
+                name : routine.name,
+                numDays : routine.numDays,
+                days : []
+            } 
+
+            let routines : Routine[] = [...data];
+            routines.push(newRoutine);
+            storeData(routines)
+
+        }
+
         setModalCreateVisible(false);
     };
 
-    const aviableOptions = [
-        {
-            id: "1",
-            name: "Push-pull-leg",
-            days: 4,
-        },
-        {
-            id: "2",
-            name: "Push-pull-leg",
-            days: 4,
-        },
-        {
-            id: "3",
-            name: "Push-pull-leg",
-            days: 4,
-        },
-
-        {
-            id: "4",
-            name: "Push-pull-leg",
-            days: 4,
-        },
-
-        {
-            id: "5",
-            name: "Push-pull-leg",
-            days: 4,
-        },
-
-        {
-            id: "6",
-            name: "Push-pull-leg",
-            days: 4,
-        },
-    ]
-
-    const navigateToRoutine = (id : string) => {
+    const navigateToRoutine = (id: string) => {
         router.navigate(`/routine?id=${id}`);
     }
 
@@ -73,14 +63,14 @@ const RoutinesScreen = () => {
             </View>
             <ScrollView>
                 <View style={styles.routinesContainer}>
-                    {aviableOptions.map(routine => (
+                    {data.map(routine => (
                         <Pressable key={routine.id} onPress={() => navigateToRoutine(routine.id)}>
                             <RoutineBox options={routine} />
                         </Pressable>
                     ))}
                 </View>
             </ScrollView>
-            <CreateRoutineModal isVisible={modalCreateVisible} onClose={onModalClose}>
+            <CreateRoutineModal isVisible={modalCreateVisible} onClose={(data? : ModalRoutineData) => onModalClose(data)}>
             </CreateRoutineModal>
         </View>
     )
