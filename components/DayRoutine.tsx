@@ -5,23 +5,32 @@ import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AddExerciseModal from './AddExerciseModal';
-import { Day } from '@/app/AppContext';
+import { Day, Exercise } from '@/app/AppContext';
+import { IMAGES } from '@/utils/imagesFile';
 
 type Props = {
-    day: Day
+    options: Day
 }
 
-const PlaceholderImage = require('@/assets/images/biceps.png');
-
-const DayRoutine = ({ day }: Props) => {
+const DayRoutine = ({ options }: Props) => {
 
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
+    const [day, setDay] = useState<Day>(options);
 
     const onModalOpen = () => {
         setModalCreateVisible(true);
     };
 
-    const onModalClose = () => {
+    const onModalClose = (exercise?: Exercise) => {
+
+        if (exercise) {
+
+            let newDay = { ...day };
+            newDay.exercises.push(exercise);
+            setDay(newDay);
+
+        }
+
         setModalCreateVisible(false);
     };
 
@@ -30,14 +39,13 @@ const DayRoutine = ({ day }: Props) => {
             <Text style={globalStyles.title}>{day.name}</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View style={styles.routineContianer}>
-                    <View style={styles.exerciceContainer}>
-                        <Image source={PlaceholderImage} style={styles.image} />
-                        <Text style={styles.repsText}>4x10</Text>
-                    </View>
-                    <View style={styles.exerciceContainer}>
-                        <Image source={PlaceholderImage} style={styles.image} />
-                        <Text style={styles.repsText}>4x10</Text>
-                    </View>
+
+                    {day.exercises.map(exercise => (
+                        <View key={exercise.id} style={styles.exerciceContainer}>
+                            <Image source={IMAGES[parseInt(exercise.id) - 1].image} style={styles.image} />
+                            <Text style={styles.repsText}>{exercise.series}</Text>
+                        </View>
+                    ))}
 
                     <Pressable style={styles.addButton} onPress={onModalOpen}>
                         <FontAwesome6 name="add" size={32} color="white" />

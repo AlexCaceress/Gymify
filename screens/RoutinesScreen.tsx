@@ -6,12 +6,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import RoutineBox from '@/components/RoutineBox';
 import CreateRoutineModal from '@/components/CreateRoutineModal';
 import { router } from 'expo-router';
-import { Routine, useAppContext } from '@/app/AppContext';
+import { Day, Routine, useAppContext } from '@/app/AppContext';
 
 export type ModalRoutineData = {
-    name : string,
-    numDays : number,
-    selections : string[]
+    name: string,
+    numDays: number,
+    selections: string[]
 }
 
 const RoutinesScreen = () => {
@@ -30,16 +30,23 @@ const RoutinesScreen = () => {
 
     const onModalClose = (routine?: ModalRoutineData) => {
 
-        if(routine){
+        if (routine) {
 
-            let newRoutine : Routine = {
-                id : (data.length + 1).toString(),
-                name : routine.name,
-                numDays : routine.numDays,
-                days : []
-            } 
+            let _days: Day[] = routine.selections.map((day) => {
+                return {
+                    name: day,
+                    exercises: []
+                }
+            });
 
-            let routines : Routine[] = [...data];
+            let newRoutine: Routine = {
+                id: (data.length + 1).toString(),
+                name: routine.name,
+                numDays: routine.numDays,
+                days: _days
+            }
+
+            let routines: Routine[] = [...data];
             routines.push(newRoutine);
             storeData(routines)
 
@@ -70,7 +77,7 @@ const RoutinesScreen = () => {
                     ))}
                 </View>
             </ScrollView>
-            <CreateRoutineModal isVisible={modalCreateVisible} onClose={(data? : ModalRoutineData) => onModalClose(data)}>
+            <CreateRoutineModal isVisible={modalCreateVisible} onClose={onModalClose}>
             </CreateRoutineModal>
         </View>
     )

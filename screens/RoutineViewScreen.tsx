@@ -63,7 +63,7 @@ const RoutineViewScreen = ({ id }: Props) => {
             <ScrollView>
                 <View style={styles.daysRoutineContainer}>
                     {routine?.days?.map(day => (
-                        <DayRoutine day={day} />
+                        <DayRoutine key={day.name} options={day} />
                     ))}
                 </View>
             </ScrollView>
