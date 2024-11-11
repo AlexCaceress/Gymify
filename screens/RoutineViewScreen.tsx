@@ -5,7 +5,7 @@ import DayRoutine from '@/components/DayRoutine'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Routine, useAppContext } from '@/app/AppContext';
+import { Day, Routine, useAppContext } from '@/app/AppContext';
 
 type Props = {
     id: string
@@ -38,6 +38,24 @@ const RoutineViewScreen = ({ id }: Props) => {
         handleBackPress();
     }
 
+    const updateRoutine = (newDay: Day) => {
+
+        const newDays = routine?.days?.map(day =>
+            newDay.name === day.name ? { ...day, ...newDay } : day
+        );
+
+        const newRoutine = { ...routine, days: newDays } as Routine;
+
+        const newRoutines = data.map(routine =>
+            routine.id === newRoutine.id ? { ...routine, ...newRoutine } : routine
+        );
+
+        setRoutine(newRoutine); // Actualiza la vista de la rutina acutal
+        storeData(newRoutines); // Guarda en el almacenamiento la acutalizacion de esa rutina
+    }
+
+
+
     return (
         <View style={[globalStyles.container, {
             paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 30,
@@ -63,7 +81,7 @@ const RoutineViewScreen = ({ id }: Props) => {
             <ScrollView>
                 <View style={styles.daysRoutineContainer}>
                     {routine?.days?.map(day => (
-                        <DayRoutine key={day.name} options={day} />
+                        <DayRoutine key={day.name} options={day} updateRoutine={updateRoutine} />
                     ))}
                 </View>
             </ScrollView>

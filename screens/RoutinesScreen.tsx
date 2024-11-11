@@ -18,10 +18,6 @@ const RoutinesScreen = () => {
 
     const { data, storeData } = useAppContext();
 
-    useEffect(() => {
-        console.log("Estado actual desde rutinas:", data);
-    }, [data]);
-
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
 
     const onModalOpen = () => {

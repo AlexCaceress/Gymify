@@ -12,10 +12,6 @@ const HomeScreen = () => {
 
     const { data, storeData } = useAppContext();
 
-    useEffect(() => {
-        console.log("Estado actual desde home:", data);
-    }, [data]);
-
     return (
         <SafeAreaView style={globalStyles.container}>
             <Text style={styles.title}>Monday's Routine</Text>

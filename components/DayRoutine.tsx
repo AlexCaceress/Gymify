@@ -5,17 +5,17 @@ import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AddExerciseModal from './AddExerciseModal';
-import { Day, Exercise } from '@/app/AppContext';
+import { Day, Exercise, useAppContext } from '@/app/AppContext';
 import { IMAGES } from '@/utils/imagesFile';
 
 type Props = {
     options: Day
+    updateRoutine : (day : Day) => void
 }
 
-const DayRoutine = ({ options }: Props) => {
+const DayRoutine = ({ options, updateRoutine }: Props) => {
 
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
-    const [day, setDay] = useState<Day>(options);
 
     const onModalOpen = () => {
         setModalCreateVisible(true);
@@ -26,11 +26,11 @@ const DayRoutine = ({ options }: Props) => {
         if (exercise) {
 
             let newDay = {
-                ...day,
-                exercises: [...day.exercises, exercise]
+                ...options,
+                exercises: [...options.exercises, exercise]
             };
             
-            setDay(newDay);
+            updateRoutine(newDay);
 
         }
 
@@ -39,11 +39,11 @@ const DayRoutine = ({ options }: Props) => {
 
     return (
         <View style={styles.container}>
-            <Text style={globalStyles.title}>{day.name}</Text>
+            <Text style={globalStyles.title}>{options.name}</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View style={styles.routineContianer}>
 
-                    {day.exercises.map(exercise => (
+                    {options.exercises.map(exercise => (
                         <View key={exercise.id} style={styles.exerciceContainer}>
                             <Image source={IMAGES[parseInt(exercise.id) - 1].image} style={styles.image} />
                             <Text style={styles.repsText}>{exercise.series}</Text>
