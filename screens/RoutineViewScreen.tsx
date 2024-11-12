@@ -6,6 +6,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Day, Routine, useAppContext } from '@/app/AppContext';
+import DropdownButton from '@/components/DropdownButton';
 
 type Props = {
     id: string
@@ -54,6 +55,14 @@ const RoutineViewScreen = ({ id }: Props) => {
         storeData(newRoutines); // Guarda en el almacenamiento la acutalizacion de esa rutina
     }
 
+    const deleteRoutine = () => {
+
+        let newData = [...data];
+        newData = newData.filter(item => { return item.id !== routine?.id } );
+        storeData(newData);
+        handleBackPress();
+
+    }
 
 
     return (
@@ -64,9 +73,7 @@ const RoutineViewScreen = ({ id }: Props) => {
                 <Pressable onPress={handleBackPress}>
                     <AntDesign name="arrowleft" size={32} color="white" />
                 </Pressable>
-                <Pressable>
-                    <MaterialIcons name="more-vert" size={32} color="white" />
-                </Pressable>
+                <DropdownButton deleteRoutine={deleteRoutine}/>
             </View>
             <View >
                 <View style={styles.imageContainer}>

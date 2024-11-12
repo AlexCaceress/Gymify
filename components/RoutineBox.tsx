@@ -1,25 +1,26 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Image } from 'expo-image';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Routine } from '@/app/AppContext';
+import { Routine, useAppContext } from '@/app/AppContext';
+import DropdownButton from './DropdownButton';
 
 const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 
 type Props = {
-    options : Routine
+    options: Routine
 }
 
-const RoutineBox = ({options} : Props) => {
+const RoutineBox = ({ options }: Props) => {
+
     return (
         <View style={styles.container}>
             <Image source={PlaceholderImage} style={styles.image} />
             <View style={styles.infoRoutine}>
-                <View style={{ flexDirection : "row", justifyContent : "space-between" }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <Text style={styles.title}>{options.name}</Text>
-                    <MaterialIcons name="more-vert" size={24} color="white" />
                 </View>
-                <Text style={{color : "#fff"}}>{options.numDays} days</Text>
+                <Text style={{ color: "#fff" }}>{options.numDays} days</Text>
             </View>
         </View>
     )
@@ -44,12 +45,12 @@ const styles = StyleSheet.create({
     },
     infoRoutine: {
         flex: 1,
-        gap : 5
+        gap: 5
     },
-    title : {
+    title: {
         color: "#fff",
         fontWeight: "400",
         fontSize: 20,
-        marginTop : 5,
+        marginTop: 5,
     }
 })
