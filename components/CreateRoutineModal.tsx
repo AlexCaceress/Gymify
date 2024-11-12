@@ -58,12 +58,12 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
 
         if (routine) {
 
-            setSelectedImage(routine.image);
-
             let daysSelected = routine.days?.map(day => {
                 return day.name;
             })
 
+            setNameRoutine(routine.name);
+            setSelectedImage(routine.image);
             setSelected(daysSelected ? daysSelected : [])
 
         }
@@ -90,6 +90,18 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
         } else {
             const result = [...selected, id]
             setSelected(result);
+        }
+
+    }
+
+    const manageRoutine = () => {
+        
+        // Si me han pasado routine por Props, esta se modificara y se guardara, sino se creara una nueva rutina
+        if(routine) {
+            // Se edita la rutina existente
+        }
+        else{
+            createRoutine(); // Se crea la nueva rutina
         }
 
     }
@@ -129,6 +141,7 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
                                     style={styles.input}
                                     placeholder="Type here to translate!"
                                     onChangeText={newText => setNameRoutine(newText)}
+                                    value={nameRoutine}
                                 />
                             </View>
                             <View style={styles.inputSection}>
@@ -137,7 +150,7 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
                                 <CheckBoxDaysList options={aviableOptions} selectedOption={selected} onPressCheckbox={onPressCheckbox} />
                             </View>
                             <View style={{ height: 60, alignItems: "center" }}>
-                                <Pressable style={[globalStyles.button, { width: 200 }]} onPress={createRoutine}>
+                                <Pressable style={[globalStyles.button, { width: 200 }]} onPress={manageRoutine}>
                                     <Text style={[globalStyles.buttonLabel, { textAlign: "center" }]}>Save</Text>
                                 </Pressable>
                             </View>
@@ -178,6 +191,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "#fff",
         height: 40,
-        width: "80%"
+        width: "80%",
+        textAlign : "center"
     }
 });
