@@ -100,7 +100,7 @@ export default AddExerciseModal
 
 const styles = StyleSheet.create({
     header: {
-        marginTop: 20
+        marginVertical : 20
     },
     title: {
         color: '#fff',
@@ -113,11 +113,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         padding: 10,
         gap: 10,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     image: {
-        width: 100,
-        height: 100,
+        width: 90,
+        height: 90,
         borderRadius: 10,
     },
     secondScreenContainer: {

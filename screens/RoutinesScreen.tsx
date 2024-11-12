@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -11,7 +11,8 @@ import { Day, Routine, useAppContext } from '@/app/AppContext';
 export type ModalRoutineData = {
     name: string,
     numDays: number,
-    selections: string[]
+    selections: string[],
+    image: string
 }
 
 const RoutinesScreen = () => {
@@ -39,6 +40,7 @@ const RoutinesScreen = () => {
                 id: (data.length + 1).toString(),
                 name: routine.name,
                 numDays: routine.numDays,
+                image: routine.image,
                 days: _days
             }
 
@@ -60,8 +62,12 @@ const RoutinesScreen = () => {
             <View style={styles.header}>
                 <Text style={styles.title}>Your Routines</Text>
                 <View style={styles.icons}>
-                    <MaterialIcons name="search" size={32} color="white" />
-                    <AntDesign name="pluscircleo" size={26} color="white" onPress={onModalOpen} />
+                    <TouchableOpacity>
+                        <MaterialIcons name="search" size={32} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <AntDesign name="pluscircleo" size={26} color="white" onPress={onModalOpen} />
+                    </TouchableOpacity>
                 </View>
             </View>
             <ScrollView>
@@ -73,8 +79,8 @@ const RoutinesScreen = () => {
                     ))}
                 </View>
             </ScrollView>
-            <CreateRoutineModal isVisible={modalCreateVisible} onClose={onModalClose}>
-            </CreateRoutineModal>
+            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose}>
+            </CreateRoutineModal>)}
         </View>
     )
 }

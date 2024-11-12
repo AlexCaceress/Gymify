@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Routine, useAppContext } from '@/app/AppContext';
 import DropdownButton from './DropdownButton';
+import ImageViewer from './ImageViewer';
 
 const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 
@@ -15,7 +16,7 @@ const RoutineBox = ({ options }: Props) => {
 
     return (
         <View style={styles.container}>
-            <Image source={PlaceholderImage} style={styles.image} />
+            <ImageViewer selectedImage={options.image} customStyle={styles.image}/>
             <View style={styles.infoRoutine}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <Text style={styles.title}>{options.name}</Text>

@@ -15,6 +15,7 @@ export type Routine = {
   id: string,
   name: string
   numDays: number,
+  image : string,
   days?: Day[]
 }
 

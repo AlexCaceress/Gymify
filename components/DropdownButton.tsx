@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 
 type Props = {
-    deleteRoutine : () => void
+    deleteRoutine : () => void,
+    editRoutine : () => void
 }
 
 
-const DropdownButton = ({deleteRoutine} : Props) => {
+const DropdownButton = ({deleteRoutine, editRoutine} : Props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const toggleModal = () => {
@@ -16,7 +17,7 @@ const DropdownButton = ({deleteRoutine} : Props) => {
 
     const handleEdit = () => {
         setIsModalVisible(false);
-        console.log("Edit");
+        editRoutine();
     };
 
     const handleDelete = () => {

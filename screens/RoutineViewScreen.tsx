@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, Platform, StatusBar, Pressable, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Image, Platform, StatusBar, Pressable, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
 import DayRoutine from '@/components/DayRoutine'
@@ -7,6 +7,9 @@ import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Day, Routine, useAppContext } from '@/app/AppContext';
 import DropdownButton from '@/components/DropdownButton';
+import ImageViewer from '@/components/ImageViewer';
+import { ModalRoutineData } from './RoutinesScreen';
+import CreateRoutineModal from '@/components/CreateRoutineModal';
 
 type Props = {
     id: string
@@ -19,6 +22,7 @@ const RoutineViewScreen = ({ id }: Props) => {
     const { data, storeData } = useAppContext();
     const router = useRouter();
     const [routine, setRoutine] = useState<Routine>()
+    const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
 
     const handleBackPress = () => {
         router.back();  // Regresa a la pantalla anterior
@@ -58,11 +62,47 @@ const RoutineViewScreen = ({ id }: Props) => {
     const deleteRoutine = () => {
 
         let newData = [...data];
-        newData = newData.filter(item => { return item.id !== routine?.id } );
+        newData = newData.filter(item => { return item.id !== routine?.id });
         storeData(newData);
         handleBackPress();
 
     }
+
+    const editRoutine = () => {
+        onModalOpen();
+    }
+
+    const onModalOpen = () => {
+        setModalCreateVisible(true);
+    };
+
+    const onModalClose = (routine?: ModalRoutineData) => {
+
+        if (routine) {
+
+            let _days: Day[] = routine.selections.map((day) => {
+                return {
+                    name: day,
+                    exercises: []
+                }
+            });
+
+            let newRoutine: Routine = {
+                id: (data.length + 1).toString(),
+                name: routine.name,
+                numDays: routine.numDays,
+                image: routine.image,
+                days: _days
+            }
+
+            let routines: Routine[] = [...data];
+            routines.push(newRoutine);
+            storeData(routines)
+
+        }
+
+        setModalCreateVisible(false);
+    };
 
 
     return (
@@ -70,18 +110,18 @@ const RoutineViewScreen = ({ id }: Props) => {
             paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 30,
         }]}>
             <View style={styles.iconsRoutineContainer}>
-                <Pressable onPress={handleBackPress}>
+                <TouchableOpacity onPress={handleBackPress}>
                     <AntDesign name="arrowleft" size={32} color="white" />
-                </Pressable>
-                <DropdownButton deleteRoutine={deleteRoutine}/>
+                </TouchableOpacity>
+                <DropdownButton deleteRoutine={deleteRoutine} editRoutine={editRoutine} />
             </View>
             <View >
                 <View style={styles.imageContainer}>
-                    <Image source={PlaceholderImage} style={styles.image} />
+                    <ImageViewer selectedImage={routine?.image} customStyle={styles.image} />
                 </View>
                 <View style={styles.infoRoutineContainer}>
                     <Text style={styles.title}>{routine?.name}</Text>
-                    <Text style={styles.subtitle}>{routine?.numDays}</Text>
+                    <Text style={styles.subtitle}>{routine?.numDays} days</Text>
                 </View>
             </View>
 
@@ -92,6 +132,10 @@ const RoutineViewScreen = ({ id }: Props) => {
                     ))}
                 </View>
             </ScrollView>
+
+            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose} routine={routine}>
+            </CreateRoutineModal>)}
+
 
         </View>
     )
@@ -109,12 +153,12 @@ const styles = StyleSheet.create({
     imageContainer: {
         alignItems: "center",
         marginTop: 20,
-        marginBottom: 20
+        marginBottom: 10
     },
     image: {
-        width: 180,
-        height: 180,
-        borderRadius: 20
+        width: 200,
+        height: 200,
+        borderRadius: 10
     },
     infoRoutineContainer: {
         gap: 10,

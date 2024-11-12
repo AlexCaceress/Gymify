@@ -1,5 +1,5 @@
 import { Modal, View, Text, Pressable, StyleSheet, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native';
@@ -7,18 +7,21 @@ import CheckBoxDaysList from './CheckBoxDaysList';
 import globalStyles from '@/globalStyles';
 import { Routine } from '@/app/AppContext';
 import { ModalRoutineData } from '@/screens/RoutinesScreen';
+import * as ImagePicker from 'expo-image-picker';
+import ImageViewer from './ImageViewer';
+
 
 type Props = PropsWithChildren<{
-    isVisible: boolean;
-    onClose: (data? : ModalRoutineData) => void;
+    onClose: (data?: ModalRoutineData) => void;
+    routine?: Routine
 }>;
 
-const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
 
-export default function CreateRoutineModal({ isVisible, onClose }: Props) {
+export default function CreateRoutineModal({ onClose, routine }: Props) {
 
     const [nameRoutine, setNameRoutine] = useState<string>("");
     const [selected, setSelected] = useState<string[]>([]);
+    const [selectedImage, setSelectedImage] = useState<string>("");
 
     const aviableOptions = [
         {
@@ -51,8 +54,36 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
         },
     ]
 
+    useEffect(() => {
+
+        if (routine) {
+
+            setSelectedImage(routine.image);
+
+            let daysSelected = routine.days?.map(day => {
+                return day.name;
+            })
+
+            setSelected(daysSelected ? daysSelected : [])
+
+        }
+
+    }, []);
+
+    const pickImageAsync = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setSelectedImage(result.assets[0].uri);
+        }
+
+    }
+
     const onPressCheckbox = (id: string) => {
-        
+
         if (selected.includes(id)) {
             const newSelected = selected.filter(item => item != id);
             setSelected(newSelected)
@@ -63,21 +94,20 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
 
     }
 
-    const closeModal = () => {
-
-        let data : ModalRoutineData | undefined = undefined
-
-        if(nameRoutine && selected.length > 0){
-            data = {name : nameRoutine, numDays : selected.length, selections : selected}
+    const createRoutine = () => {
+        let data: ModalRoutineData | undefined = undefined
+        if (nameRoutine && selected.length > 0) {
+            data = { name: nameRoutine, numDays: selected.length, selections: selected, image: selectedImage }
         }
-
         onClose(data);
-        setNameRoutine("");
-        setSelected([]);
+    }
+
+    const closeModal = () => {
+        onClose(undefined);
     }
 
     return (
-        <Modal animationType="slide" transparent={true} visible={isVisible}>
+        <Modal animationType="slide" transparent={true}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <LinearGradient colors={['#414345', '#232526']} style={globalStyles.modalContent}>
                     <View style={{ alignItems: "flex-end" }}>
@@ -87,11 +117,13 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
                     </View>
                     <View style={styles.container}>
                         <View style={styles.imageContainer}>
-                            <Image source={PlaceholderImage} style={styles.image} />
-                            <Text style={{ color: "#fff", fontSize: 14, fontWeight: "bold" }}>Change Picture</Text>
+                            <ImageViewer selectedImage={selectedImage} />
+                            <Pressable onPress={pickImageAsync}>
+                                <Text style={{ color: "#fff", fontSize: 14, fontWeight: "bold" }}>Change Picture</Text>
+                            </Pressable>
                         </View>
                         <View style={styles.inputsContainer}>
-                            <View style={[styles.inputSection, { flex: 1 / 2 }]}>
+                            <View style={[styles.inputSection]}>
                                 <Text style={styles.title}>Name Routine</Text>
                                 <TextInput
                                     style={styles.input}
@@ -103,6 +135,11 @@ export default function CreateRoutineModal({ isVisible, onClose }: Props) {
                                 <Text style={styles.title}>Days Routine</Text>
 
                                 <CheckBoxDaysList options={aviableOptions} selectedOption={selected} onPressCheckbox={onPressCheckbox} />
+                            </View>
+                            <View style={{ height: 60, alignItems: "center" }}>
+                                <Pressable style={[globalStyles.button, { width: 200 }]} onPress={createRoutine}>
+                                    <Text style={[globalStyles.buttonLabel, { textAlign: "center" }]}>Save</Text>
+                                </Pressable>
                             </View>
                         </View>
                     </View>
@@ -127,19 +164,13 @@ const styles = StyleSheet.create({
         gap: 20,
         alignItems: "center",
     },
-    image: {
-        width: 200,
-        height: 200,
-        borderRadius: 20
-    },
     inputsContainer: {
         flex: 1,
-        paddingTop: 70,
+        justifyContent: "space-around"
     },
     inputSection: {
-        flex: 1,
         gap: 20,
-        alignItems: "center"
+        alignItems: "center",
     },
     input: {
         borderBottomWidth: 2,
