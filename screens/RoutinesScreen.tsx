@@ -25,32 +25,31 @@ const RoutinesScreen = () => {
         setModalCreateVisible(true);
     };
 
-    const onModalClose = (routine?: ModalRoutineData) => {
+    const onModalClose = () => {
+        setModalCreateVisible(false);
+    }
 
-        if (routine) {
+    const createRoutine = (routine: ModalRoutineData) => {
 
-            let _days: Day[] = routine.selections.map((day) => {
-                return {
-                    name: day,
-                    exercises: []
-                }
-            });
-
-            let newRoutine: Routine = {
-                id: (data.length + 1).toString(),
-                name: routine.name,
-                numDays: routine.numDays,
-                image: routine.image,
-                days: _days
+        let _days: Day[] = routine.selections.map((day) => {
+            return {
+                name: day,
+                exercises: []
             }
+        });
 
-            let routines: Routine[] = [...data];
-            routines.push(newRoutine);
-            storeData(routines)
-
+        let newRoutine: Routine = {
+            id: (data.length + 1).toString(),
+            name: routine.name,
+            numDays: routine.numDays,
+            image: routine.image,
+            days: _days
         }
 
-        setModalCreateVisible(false);
+        let routines: Routine[] = [...data];
+        routines.push(newRoutine);
+        storeData(routines);
+
     };
 
     const navigateToRoutine = (id: string) => {
@@ -79,7 +78,7 @@ const RoutinesScreen = () => {
                     ))}
                 </View>
             </ScrollView>
-            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose}>
+            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose} createRoutineHandler={createRoutine}>
             </CreateRoutineModal>)}
         </View>
     )

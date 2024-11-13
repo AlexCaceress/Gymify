@@ -15,8 +15,6 @@ type Props = {
     id: string
 }
 
-const PlaceholderImage = require('@/assets/images/alex-image.jpeg');
-
 const RoutineViewScreen = ({ id }: Props) => {
 
     const { data, storeData } = useAppContext();
@@ -68,40 +66,24 @@ const RoutineViewScreen = ({ id }: Props) => {
 
     }
 
-    const editRoutine = () => {
-        onModalOpen();
-    }
-
     const onModalOpen = () => {
         setModalCreateVisible(true);
     };
 
-    const onModalClose = (routine?: ModalRoutineData) => {
-
-        if (routine) {
-
-            let _days: Day[] = routine.selections.map((day) => {
-                return {
-                    name: day,
-                    exercises: []
-                }
-            });
-
-            let newRoutine: Routine = {
-                id: (data.length + 1).toString(),
-                name: routine.name,
-                numDays: routine.numDays,
-                image: routine.image,
-                days: _days
-            }
-
-            let routines: Routine[] = [...data];
-            routines.push(newRoutine);
-            storeData(routines)
-
-        }
-
+    const onModalClose = () => {
         setModalCreateVisible(false);
+    }
+
+    const editRoutine = (editedRoutine: Routine) => {
+
+        let newData : Routine[] = data.map((item : Routine) => {
+            return item.id === editedRoutine.id ? {...item, ...editedRoutine, days : editedRoutine.days ? [...editedRoutine.days] : []} : item
+        });
+
+        console.log(editedRoutine);
+        setRoutine(editedRoutine);
+        storeData(newData);
+        
     };
 
 
@@ -113,7 +95,7 @@ const RoutineViewScreen = ({ id }: Props) => {
                 <TouchableOpacity onPress={handleBackPress}>
                     <AntDesign name="arrowleft" size={32} color="white" />
                 </TouchableOpacity>
-                <DropdownButton deleteRoutine={deleteRoutine} editRoutine={editRoutine} />
+                <DropdownButton deleteRoutine={deleteRoutine} editRoutine={onModalOpen} />
             </View>
             <View >
                 <View style={styles.imageContainer}>
@@ -133,7 +115,7 @@ const RoutineViewScreen = ({ id }: Props) => {
                 </View>
             </ScrollView>
 
-            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose} routine={routine}>
+            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose} routine={routine} editRoutineHandler={editRoutine}>
             </CreateRoutineModal>)}
 
 

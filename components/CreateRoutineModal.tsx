@@ -5,19 +5,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native';
 import CheckBoxDaysList from './CheckBoxDaysList';
 import globalStyles from '@/globalStyles';
-import { Routine } from '@/app/AppContext';
+import { Day, Routine } from '@/app/AppContext';
 import { ModalRoutineData } from '@/screens/RoutinesScreen';
 import * as ImagePicker from 'expo-image-picker';
 import ImageViewer from './ImageViewer';
 
 
 type Props = PropsWithChildren<{
-    onClose: (data?: ModalRoutineData) => void;
+    onClose: () => void
+    createRoutineHandler?: (newRoutine: ModalRoutineData) => void,
+    editRoutineHandler?: (routine: Routine) => void,
     routine?: Routine
 }>;
 
 
-export default function CreateRoutineModal({ onClose, routine }: Props) {
+export default function CreateRoutineModal({ onClose, createRoutineHandler, editRoutineHandler, routine }: Props) {
 
     const [nameRoutine, setNameRoutine] = useState<string>("");
     const [selected, setSelected] = useState<string[]>([]);
@@ -94,28 +96,55 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
 
     }
 
-    const manageRoutine = () => {
-        
-        // Si me han pasado routine por Props, esta se modificara y se guardara, sino se creara una nueva rutina
-        if(routine) {
-            // Se edita la rutina existente
-        }
-        else{
-            createRoutine(); // Se crea la nueva rutina
-        }
-
-    }
-
     const createRoutine = () => {
-        let data: ModalRoutineData | undefined = undefined
+
         if (nameRoutine && selected.length > 0) {
-            data = { name: nameRoutine, numDays: selected.length, selections: selected, image: selectedImage }
+            let data: ModalRoutineData = { name: nameRoutine, numDays: selected.length, selections: selected, image: selectedImage }
+            createRoutineHandler?.(data);
         }
-        onClose(data);
+
+        onClose();
     }
 
-    const closeModal = () => {
-        onClose(undefined);
+    const editRoutine = (routine: Routine) => {
+
+        let newRoutine : Routine = { ...routine }
+
+        newRoutine.name = nameRoutine;
+        newRoutine.numDays = selected.length;
+        newRoutine.image = selectedImage;
+
+        let newDays: Day[] = [];
+
+        if (newRoutine.days) {
+
+            for (let daySelected of selected) {
+
+                let find : Day | undefined = newRoutine.days?.find((oldDay) => oldDay.name === daySelected);
+
+                if (find) {
+                    newDays.push(find);
+                } else {
+                    newDays.push({ name: daySelected, exercises: [] });
+                }
+
+            }
+        }
+
+        newRoutine.days = newDays;
+        editRoutineHandler?.(newRoutine);
+        onClose();
+    }
+
+    const manageRoutineHandler = () => {
+
+        if (routine) {
+            editRoutine(routine);
+        }
+        else {
+            createRoutine();
+        }
+
     }
 
     return (
@@ -123,7 +152,7 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <LinearGradient colors={['#414345', '#232526']} style={globalStyles.modalContent}>
                     <View style={{ alignItems: "flex-end" }}>
-                        <Pressable onPress={closeModal}>
+                        <Pressable onPress={onClose}>
                             <MaterialIcons name="close" color="#fff" size={32} />
                         </Pressable>
                     </View>
@@ -150,7 +179,7 @@ export default function CreateRoutineModal({ onClose, routine }: Props) {
                                 <CheckBoxDaysList options={aviableOptions} selectedOption={selected} onPressCheckbox={onPressCheckbox} />
                             </View>
                             <View style={{ height: 60, alignItems: "center" }}>
-                                <Pressable style={[globalStyles.button, { width: 200 }]} onPress={manageRoutine}>
+                                <Pressable style={[globalStyles.button, { width: 200 }]} onPress={manageRoutineHandler}>
                                     <Text style={[globalStyles.buttonLabel, { textAlign: "center" }]}>Save</Text>
                                 </Pressable>
                             </View>
@@ -192,6 +221,6 @@ const styles = StyleSheet.create({
         color: "#fff",
         height: 40,
         width: "80%",
-        textAlign : "center"
+        textAlign: "center"
     }
 });
