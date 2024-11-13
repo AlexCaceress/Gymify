@@ -43,8 +43,8 @@ const DayRoutine = ({ options, updateRoutine }: Props) => {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View style={styles.routineContianer}>
 
-                    {options.exercises.map(exercise => (
-                        <View key={exercise.id} style={styles.exerciceContainer}>
+                    {options.exercises.map((exercise, index) => (
+                        <View key={index} style={styles.exerciceContainer}>
                             <Image source={IMAGES[parseInt(exercise.id) - 1].image} style={styles.image} />
                             <Text style={styles.repsText}>{exercise.series}</Text>
                         </View>

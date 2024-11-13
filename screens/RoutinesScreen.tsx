@@ -6,13 +6,14 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import RoutineBox from '@/components/RoutineBox';
 import CreateRoutineModal from '@/components/CreateRoutineModal';
 import { router } from 'expo-router';
-import { Day, Routine, useAppContext } from '@/app/AppContext';
+import { Day, generateId, Routine, useAppContext } from '@/app/AppContext';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export type ModalRoutineData = {
     name: string,
     numDays: number,
     selections: string[],
-    image: string
+    image: string,
 }
 
 const RoutinesScreen = () => {
@@ -39,11 +40,12 @@ const RoutinesScreen = () => {
         });
 
         let newRoutine: Routine = {
-            id: (data.length + 1).toString(),
+            id: generateId(),
             name: routine.name,
             numDays: routine.numDays,
             image: routine.image,
-            days: _days
+            days: _days,
+            activate: false
         }
 
         let routines: Routine[] = [...data];
@@ -51,6 +53,16 @@ const RoutinesScreen = () => {
         storeData(routines);
 
     };
+
+    const changeRoutineActive = (id: string) => {
+
+        const updatedRoutines = data.map(routine =>
+            routine.id === id ? { ...routine, activate: !routine.activate } : { ...routine, activate: false }
+        )
+
+        storeData(updatedRoutines)
+
+    }
 
     const navigateToRoutine = (id: string) => {
         router.navigate(`/routine?id=${id}`);
@@ -61,11 +73,11 @@ const RoutinesScreen = () => {
             <View style={styles.header}>
                 <Text style={styles.title}>Your Routines</Text>
                 <View style={styles.icons}>
-                    <TouchableOpacity>
+                    {/* <TouchableOpacity>
                         <MaterialIcons name="search" size={32} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <AntDesign name="pluscircleo" size={26} color="white" onPress={onModalOpen} />
+                    </TouchableOpacity> */}
+                    <TouchableOpacity onPress={onModalOpen}>
+                        <FontAwesome6 name="add" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -73,7 +85,7 @@ const RoutinesScreen = () => {
                 <View style={styles.routinesContainer}>
                     {data.map(routine => (
                         <Pressable key={routine.id} onPress={() => navigateToRoutine(routine.id)}>
-                            <RoutineBox options={routine} />
+                            <RoutineBox options={routine} changeActive={changeRoutineActive} />
                         </Pressable>
                     ))}
                 </View>

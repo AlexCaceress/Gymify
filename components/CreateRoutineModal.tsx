@@ -1,4 +1,4 @@
-import { Modal, View, Text, Pressable, StyleSheet, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Modal, View, Text, Pressable, StyleSheet, TextInput, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -108,7 +108,7 @@ export default function CreateRoutineModal({ onClose, createRoutineHandler, edit
 
     const editRoutine = (routine: Routine) => {
 
-        let newRoutine : Routine = { ...routine }
+        let newRoutine: Routine = { ...routine }
 
         newRoutine.name = nameRoutine;
         newRoutine.numDays = selected.length;
@@ -120,7 +120,7 @@ export default function CreateRoutineModal({ onClose, createRoutineHandler, edit
 
             for (let daySelected of selected) {
 
-                let find : Day | undefined = newRoutine.days?.find((oldDay) => oldDay.name === daySelected);
+                let find: Day | undefined = newRoutine.days?.find((oldDay) => oldDay.name === daySelected);
 
                 if (find) {
                     newDays.push(find);
@@ -152,23 +152,23 @@ export default function CreateRoutineModal({ onClose, createRoutineHandler, edit
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <LinearGradient colors={['#414345', '#232526']} style={globalStyles.modalContent}>
                     <View style={{ alignItems: "flex-end" }}>
-                        <Pressable onPress={onClose}>
+                        <TouchableOpacity onPress={onClose}>
                             <MaterialIcons name="close" color="#fff" size={32} />
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.container}>
                         <View style={styles.imageContainer}>
                             <ImageViewer selectedImage={selectedImage} />
-                            <Pressable onPress={pickImageAsync}>
+                            <TouchableOpacity onPress={pickImageAsync}>
                                 <Text style={{ color: "#fff", fontSize: 14, fontWeight: "bold" }}>Change Picture</Text>
-                            </Pressable>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.inputsContainer}>
                             <View style={[styles.inputSection]}>
                                 <Text style={styles.title}>Name Routine</Text>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Type here to translate!"
+                                    placeholder="Name Routine"
                                     onChangeText={newText => setNameRoutine(newText)}
                                     value={nameRoutine}
                                 />
@@ -179,9 +179,9 @@ export default function CreateRoutineModal({ onClose, createRoutineHandler, edit
                                 <CheckBoxDaysList options={aviableOptions} selectedOption={selected} onPressCheckbox={onPressCheckbox} />
                             </View>
                             <View style={{ height: 60, alignItems: "center" }}>
-                                <Pressable style={[globalStyles.button, { width: 200 }]} onPress={manageRoutineHandler}>
+                                <TouchableOpacity style={[globalStyles.button, { width: 200 }]} onPress={manageRoutineHandler}>
                                     <Text style={[globalStyles.buttonLabel, { textAlign: "center" }]}>Save</Text>
-                                </Pressable>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     },
     inputsContainer: {
         flex: 1,
-        justifyContent: "space-around"
+        justifyContent: "space-evenly"
     },
     inputSection: {
         gap: 20,

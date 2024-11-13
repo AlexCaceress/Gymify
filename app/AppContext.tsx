@@ -16,6 +16,7 @@ export type Routine = {
   name: string
   numDays: number,
   image : string,
+  activate : boolean,
   days?: Day[]
 }
 
@@ -70,5 +71,9 @@ export const AppProvider = ({ children }: any) => {
     </AppContext.Provider>
   )
 }
+
+export const generateId = () => {
+  return `routine-${Math.random().toString(36).substr(2, 9)}-${Date.now().toString(36)}`;
+};
 
 export const useAppContext = () => useContext(AppContext);

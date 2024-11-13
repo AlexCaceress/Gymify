@@ -1,49 +1,136 @@
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
 import { SafeAreaView } from 'react-native'
 import { Pressable } from 'react-native'
 import Button from '@/components/Button'
-import { useAppContext } from '@/app/AppContext'
+import { Day, Routine, useAppContext } from '@/app/AppContext'
+import ImageViewer from '@/components/ImageViewer'
+import { IMAGES } from '@/utils/imagesFile'
 
-const PlaceholderImage = require('@/assets/images/Grupos_Musculares/pectoral.png');
+const PlaceholderImage = require('@/assets/images/routine.png');
 
 const HomeScreen = () => {
 
     const { data, storeData } = useAppContext();
+    const [activeRoutine, setActiveRoutine] = useState<Routine | undefined>()
+    const [todaysDay, setTodaysDay] = useState<Day | undefined>()
+
+    useEffect(() => {
+
+        getActiveRoutine();
+
+    }, [data]);
+
+    const getActiveRoutine = () => {
+
+        const activatedRoutine = data.find(routine =>
+            routine.activate
+        );
+
+        setActiveRoutine(activatedRoutine)
+
+        getToday(activatedRoutine)
+
+    }
+
+    const getToday = (activatedRoutine: Routine | undefined) => {
+
+        let todayRoutine: Day | undefined = undefined
+
+        if (activatedRoutine) {
+            const daysOfWeek = [
+                'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+            ];
+
+            const today = daysOfWeek[new Date().getDay()];
+
+            todayRoutine = activatedRoutine.days?.find((day) =>
+                day.name === today
+            );
+        }
+
+        setTodaysDay(todayRoutine)
+
+    }
 
     return (
         <SafeAreaView style={globalStyles.container}>
-            <Text style={styles.title}>Monday's Routine</Text>
-            <View style={styles.dayContainer}>
+            <Text style={[styles.title, { marginTop: 30, marginLeft: 10, }]}>{todaysDay?.name} Routine</Text>
 
-                <View style={styles.day}>
-                    <View style={styles.imageContainer}>
-                        <Image style={styles.image} source={PlaceholderImage} />
-                    </View>
+            {activeRoutine ?
+                <View style={styles.dayContainer}>
+                    <View style={styles.day}>
+                        <View style={styles.imageContainer}>
+                            <ImageViewer customStyle={styles.image} selectedImage={activeRoutine?.image} />
+                        </View>
 
-                    <View style={styles.imfoContainer}>
-                        <Text style={styles.h2}>Name Day</Text>
-                        <Text style={styles.description}>Esta es la descripcion de la rutina para ver como queda.</Text>
-                        <View style={styles.br} />
-                        <Text style={styles.h2}>Muscles involved</Text>
-                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                            <View style={styles.musclesInvolvedContainer}>
-                                <Image style={styles.muscleIcon} source={PlaceholderImage} />
-                                <Image style={styles.muscleIcon} source={PlaceholderImage} />
-                                <Image style={styles.muscleIcon} source={PlaceholderImage} />
-                                <Image style={styles.muscleIcon} source={PlaceholderImage} />
+                        <View style={styles.infoContainer}>
+                            <View style={{ gap: 10, flex: 1 / 2 }}>
+                                <Text style={styles.h2}>{activeRoutine?.name}</Text>
+                                <Text style={styles.h2}>{activeRoutine?.numDays} days</Text>
+
+                                <View style={styles.br} />
                             </View>
-                        </ScrollView>
 
+                            <View style={{ flex: 1, justifyContent: "center" }}>
+
+                                {todaysDay && todaysDay.exercises.length > 0 ?
+
+                                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                                        <View style={{ gap: 10, flexDirection: "row" }}>
+
+                                            {todaysDay.exercises.map((exercise, index) => (
+                                                <View key={index} style={styles.exerciceContainer}>
+                                                    <Image
+                                                        source={IMAGES[parseInt(exercise.id) - 1].image}
+                                                        style={{
+                                                            width: 100,
+                                                            height: 100,
+                                                            borderRadius: 10
+                                                        }}
+                                                    />
+                                                    <Text style={styles.repsText}>{exercise.series}</Text>
+                                                </View>
+                                            ))}
+                                        </View>
+
+
+                                    </ScrollView>
+
+
+                                    :
+
+                                    <Text style={[styles.title, { textAlign: "center" }]}>Rest Day!</Text>
+
+                                }
+
+
+                            </View>
+
+                        </View>
+
+
+                    </View>
+
+                    <View style={styles.footerContainer}>
+                        <Button label="Start Day" />
                     </View>
                 </View>
 
-                <View style={styles.footerContainer}>
-                    <Button label="Start Day" />
+
+                :
+
+
+                <View style={styles.notRoutinesStyle}>
+                    <Text style={[styles.title, { fontSize: 25, textAlign: "center" }]}>You do not have selected routines</Text>
+                    <Image style={{ width: 230, height: 230 }} source={PlaceholderImage} />
                 </View>
 
-            </View>
+
+            }
+
+
         </SafeAreaView>
     )
 }
@@ -59,14 +146,11 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "bold",
         fontSize: 20,
-        marginTop: 30,
-        marginLeft: 10,
     },
     dayContainer: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingTop: 50
+        justifyContent: "space-evenly",
+        alignItems: "center"
     },
     day: {
         backgroundColor: "#1A1A1A",
@@ -76,26 +160,25 @@ const styles = StyleSheet.create({
         padding: 10
     },
     footerContainer: {
-        flex: 1,
         alignItems: "center",
         justifyContent: "center"
     },
     image: {
-        width: 180,
-        height: 180,
-        marginBottom: 10
+        width: 170,
+        height: 170,
+        marginVertical: 20
     },
     imageContainer: {
         alignItems: "center"
     },
-    imfoContainer: {
+    infoContainer: {
         flex: 1,
-        gap: 20
+        // justifyContent: "space-evenly",
     },
     h2: {
         color: "#fff",
         fontWeight: "bold",
-        fontSize: 20,
+        fontSize: 18,
     },
     description: {
         color: "#fff",
@@ -106,12 +189,24 @@ const styles = StyleSheet.create({
         height: 2,
         backgroundColor: "#fff"
     },
-    musclesInvolvedContainer: {
+    routineContianer: {
+        gap: 10,
         flexDirection: "row",
-        gap: 10
+        backgroundColor: "red",
     },
-    muscleIcon: {
-        width: 50,
-        height: 50
-    }
+    repsText: {
+        fontSize: 14,
+        color: "#fff",
+        textAlign: "center"
+    },
+    exerciceContainer: {
+        gap: 10,
+        justifyContent: "center"
+    },
+    notRoutinesStyle: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 50
+    },
 })
