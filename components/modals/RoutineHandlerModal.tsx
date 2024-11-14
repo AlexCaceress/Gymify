@@ -2,13 +2,12 @@ import { Modal, View, Text, Pressable, StyleSheet, TextInput, Keyboard, Touchabl
 import { PropsWithChildren, useEffect, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'react-native';
-import CheckBoxDaysList from './CheckBoxDaysList';
+import CheckBoxDaysList from '../SelectedDaysList';
 import globalStyles from '@/globalStyles';
 import { Day, Routine } from '@/app/AppContext';
 import { ModalRoutineData } from '@/screens/RoutinesScreen';
 import * as ImagePicker from 'expo-image-picker';
-import ImageViewer from './ImageViewer';
+import ImageViewer from '../ImageViewer';
 
 
 type Props = PropsWithChildren<{

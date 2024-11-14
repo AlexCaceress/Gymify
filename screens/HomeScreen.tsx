@@ -1,20 +1,22 @@
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
 import { SafeAreaView } from 'react-native'
-import { Pressable } from 'react-native'
-import Button from '@/components/Button'
 import { Day, Routine, useAppContext } from '@/app/AppContext'
 import ImageViewer from '@/components/ImageViewer'
 import { IMAGES } from '@/utils/imagesFile'
 
-const PlaceholderImage = require('@/assets/images/routine.png');
+const RoutineIcon = require('@/assets/images/routine.png');
 
 const HomeScreen = () => {
 
-    const { data, storeData } = useAppContext();
+    const { data } = useAppContext();
     const [activeRoutine, setActiveRoutine] = useState<Routine | undefined>()
     const [todaysDay, setTodaysDay] = useState<Day | undefined>()
+    const daysOfWeek = [
+        'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+    const today = daysOfWeek[new Date().getDay()];
 
     useEffect(() => {
 
@@ -30,20 +32,15 @@ const HomeScreen = () => {
 
         setActiveRoutine(activatedRoutine)
 
-        getToday(activatedRoutine)
+        getDayRoutine(activatedRoutine)
 
     }
 
-    const getToday = (activatedRoutine: Routine | undefined) => {
+    const getDayRoutine = (activatedRoutine: Routine | undefined) => {
 
         let todayRoutine: Day | undefined = undefined
 
         if (activatedRoutine) {
-            const daysOfWeek = [
-                'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-            ];
-
-            const today = daysOfWeek[new Date().getDay()];
 
             todayRoutine = activatedRoutine.days?.find((day) =>
                 day.name === today
@@ -56,7 +53,7 @@ const HomeScreen = () => {
 
     return (
         <SafeAreaView style={globalStyles.container}>
-            <Text style={[styles.title, { marginTop: 30, marginLeft: 10, }]}>{todaysDay?.name} Routine</Text>
+            <Text style={[styles.title, { marginTop: 30, marginLeft: 10, }]}>{today} Routine</Text>
 
             {activeRoutine ?
                 <View style={styles.dayContainer}>
@@ -114,7 +111,11 @@ const HomeScreen = () => {
                     </View>
 
                     <View style={styles.footerContainer}>
-                        <Button label="Start Day" />
+
+                        <TouchableOpacity style={styles.button} onPress={() => alert('You pressed a button.')}>
+                            <Text style={styles.buttonLabel}>Start day</Text>
+                        </TouchableOpacity>
+
                     </View>
                 </View>
 
@@ -124,7 +125,7 @@ const HomeScreen = () => {
 
                 <View style={styles.notRoutinesStyle}>
                     <Text style={[styles.title, { fontSize: 25, textAlign: "center" }]}>You do not have selected routines</Text>
-                    <Image style={{ width: 230, height: 230 }} source={PlaceholderImage} />
+                    <Image style={{ width: 230, height: 230 }} source={RoutineIcon} />
                 </View>
 
 
@@ -173,26 +174,15 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         flex: 1,
-        // justifyContent: "space-evenly",
     },
     h2: {
         color: "#fff",
         fontWeight: "bold",
         fontSize: 18,
     },
-    description: {
-        color: "#fff",
-        fontSize: 14,
-        opacity: 0.8
-    },
     br: {
         height: 2,
         backgroundColor: "#fff"
-    },
-    routineContianer: {
-        gap: 10,
-        flexDirection: "row",
-        backgroundColor: "red",
     },
     repsText: {
         fontSize: 14,
@@ -208,5 +198,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         gap: 50
+    },
+    button: {
+        borderRadius: 20,
+        width: 180,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: "#fff",
+    },
+    buttonLabel: {
+        color: 'black',
+        fontSize: 16,
+        fontWeight: "bold"
     },
 })

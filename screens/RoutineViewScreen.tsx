@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, Platform, StatusBar, Pressable, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
-import DayRoutine from '@/components/DayRoutine'
+import DayRoutine from '@/components/DayViewContainer'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -9,7 +9,7 @@ import { Day, Routine, useAppContext } from '@/app/AppContext';
 import DropdownButton from '@/components/DropdownButton';
 import ImageViewer from '@/components/ImageViewer';
 import { ModalRoutineData } from './RoutinesScreen';
-import CreateRoutineModal from '@/components/CreateRoutineModal';
+import CreateRoutineModal from '@/components/modals/RoutineHandlerModal';
 
 type Props = {
     id: string
@@ -110,7 +110,7 @@ const RoutineViewScreen = ({ id }: Props) => {
             <ScrollView>
                 <View style={styles.daysRoutineContainer}>
                     {routine?.days?.map(day => (
-                        <DayRoutine key={day.name} options={day} updateRoutine={updateRoutine} />
+                        <DayRoutine key={day.name} day={day} updateRoutine={updateRoutine} />
                     ))}
                 </View>
             </ScrollView>

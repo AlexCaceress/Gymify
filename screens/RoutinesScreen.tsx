@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import RoutineBox from '@/components/RoutineBox';
-import CreateRoutineModal from '@/components/CreateRoutineModal';
+import RoutineBox from '@/components/RoutineContainer';
+import CreateRoutineModal from '@/components/modals/RoutineHandlerModal';
 import { router } from 'expo-router';
 import { Day, generateId, Routine, useAppContext } from '@/app/AppContext';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -22,11 +22,11 @@ const RoutinesScreen = () => {
 
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
 
-    const onModalOpen = () => {
+    const onModalCreateOpen = () => {
         setModalCreateVisible(true);
     };
 
-    const onModalClose = () => {
+    const onModalCreateClose = () => {
         setModalCreateVisible(false);
     }
 
@@ -76,7 +76,7 @@ const RoutinesScreen = () => {
                     {/* <TouchableOpacity>
                         <MaterialIcons name="search" size={32} color="white" />
                     </TouchableOpacity> */}
-                    <TouchableOpacity onPress={onModalOpen}>
+                    <TouchableOpacity onPress={onModalCreateOpen}>
                         <FontAwesome6 name="add" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
@@ -90,7 +90,7 @@ const RoutinesScreen = () => {
                     ))}
                 </View>
             </ScrollView>
-            {modalCreateVisible && (<CreateRoutineModal onClose={onModalClose} createRoutineHandler={createRoutine}>
+            {modalCreateVisible && (<CreateRoutineModal onClose={onModalCreateClose} createRoutineHandler={createRoutine}>
             </CreateRoutineModal>)}
         </View>
     )
@@ -100,7 +100,7 @@ export default RoutinesScreen
 
 const styles = StyleSheet.create({
     header: {
-        marginTop: 70,
+        marginTop: 30,
         marginBottom: 10,
         paddingHorizontal: 10,
         flexDirection: "row",

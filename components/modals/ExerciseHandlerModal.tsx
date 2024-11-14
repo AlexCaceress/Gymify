@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient'
 import globalStyles from '@/globalStyles'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { IMAGES } from "@/utils/imagesFile"
-import Button from './Button';
 import { Exercise } from '@/app/AppContext';
 
 type Props = PropsWithChildren<{

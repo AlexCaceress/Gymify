@@ -1,35 +1,50 @@
-import { StyleSheet, Text, View, Image, ScrollView, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Image, ScrollView, Pressable, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import globalStyles from '@/globalStyles'
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import AddExerciseModal from './AddExerciseModal';
+import AddExerciseModal from './modals/ExerciseHandlerModal';
 import { Day, Exercise, useAppContext } from '@/app/AppContext';
 import { IMAGES } from '@/utils/imagesFile';
+import routine from '@/app/routine';
+import DayHandlerModal from './modals/DayHandlerModal';
 
 type Props = {
-    options: Day
-    updateRoutine : (day : Day) => void
+    day: Day
+    updateRoutine: (day: Day) => void
 }
 
-const DayRoutine = ({ options, updateRoutine }: Props) => {
+const DayRoutine = ({ day, updateRoutine }: Props) => {
 
     const [modalCreateVisible, setModalCreateVisible] = useState<boolean>(false);
+    const [modalDayHandlerVisible, setModalDayHandlerVisible] = useState<boolean>(false);
 
-    const onModalOpen = () => {
+    useEffect(() => {
+        console.log(day)
+    })
+
+    const onModalDayHandlerOpen = () => {
+        setModalDayHandlerVisible(true);
+    };
+
+    const onModalDayHandlerClose = () => {
+        setTimeout(() => setModalDayHandlerVisible(false), 200);
+    }
+
+    const onModalCreateOpen = () => {
         setModalCreateVisible(true);
     };
 
-    const onModalClose = (exercise?: Exercise) => {
+    const onModalCreateClose = (exercise?: Exercise) => {
 
         if (exercise) {
 
             let newDay = {
-                ...options,
-                exercises: [...options.exercises, exercise]
+                ...day,
+                exercises: [...day.exercises, exercise]
             };
-            
+
             updateRoutine(newDay);
 
         }
@@ -39,29 +54,36 @@ const DayRoutine = ({ options, updateRoutine }: Props) => {
 
     return (
         <View style={styles.container}>
-            <Text style={globalStyles.title}>{options.name}</Text>
+            <Text style={globalStyles.title}>{day.name}</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View style={styles.routineContianer}>
 
-                    {options.exercises.map((exercise, index) => (
+                    {day.exercises.map((exercise, index) => (
                         <View key={index} style={styles.exerciceContainer}>
                             <Image source={IMAGES[parseInt(exercise.id) - 1].image} style={styles.image} />
                             <Text style={styles.repsText}>{exercise.series}</Text>
                         </View>
                     ))}
 
-                    <Pressable style={styles.addButton} onPress={onModalOpen}>
+                    <Pressable style={styles.addButton} onPress={onModalCreateOpen}>
                         <FontAwesome6 name="add" size={32} color="white" />
                     </Pressable>
 
                 </View>
             </ScrollView>
             <View style={styles.iconsContainer}>
-                <AntDesign name="playcircleo" size={32} color="white" />
-                <Feather name="settings" size={32} color="white" />
+                <TouchableOpacity>
+                    <AntDesign name="playcircleo" size={32} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onModalDayHandlerOpen}>
+                    <Feather name="settings" size={32} color="white" />
+                </TouchableOpacity>
             </View>
-            <AddExerciseModal isVisible={modalCreateVisible} onClose={onModalClose}>
+            <AddExerciseModal isVisible={modalCreateVisible} onClose={onModalCreateClose}>
             </AddExerciseModal>
+
+            {modalDayHandlerVisible && (<DayHandlerModal day={day} onClose={onModalDayHandlerClose}>
+            </DayHandlerModal>)}
         </View>
     )
 }
