@@ -100,7 +100,7 @@ export default RoutinesScreen
 
 const styles = StyleSheet.create({
     header: {
-        marginTop: 30,
+        marginTop: 50,
         marginBottom: 10,
         paddingHorizontal: 10,
         flexDirection: "row",

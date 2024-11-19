@@ -10,10 +10,12 @@ import { IMAGES } from '@/utils/imagesFile';
 
 type Props = PropsWithChildren<{
     onClose: () => void,
+    deleteExercise: (index : number) => void,
     day: Day
 }>;
 
-const DayHandlerModal = ({ onClose, day }: Props) => {
+const DayHandlerModal = ({ onClose, deleteExercise,  day }: Props) => {
+
     return (
         <Modal animationType="slide" transparent={true}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -30,7 +32,7 @@ const DayHandlerModal = ({ onClose, day }: Props) => {
 
                             {day.exercises.map((exercise, index) => (
                                 <View key={index} style={styles.exercise}>
-                                    <TouchableOpacity style={{ alignItems: "flex-end" }}>
+                                    <TouchableOpacity style={{ alignItems: "flex-end" }} onPress={() => deleteExercise(index)}>
                                         <MaterialIcons name="close" color="#fff" size={32} />
                                     </TouchableOpacity>
                                     <Image source={IMAGES[parseInt(exercise.id) - 1].image} style={styles.image} />

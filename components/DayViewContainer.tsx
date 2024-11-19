@@ -32,6 +32,18 @@ const DayRoutine = ({ day, updateRoutine }: Props) => {
         setTimeout(() => setModalDayHandlerVisible(false), 200);
     }
 
+    const deleteExercise = (index : number) => {
+
+        let newDay = {
+            ...day,
+            exercises: [...day.exercises]
+        }
+
+        newDay.exercises.splice(index, 1);
+        updateRoutine(newDay);
+
+    }
+
     const onModalCreateOpen = () => {
         setModalCreateVisible(true);
     };
@@ -82,7 +94,7 @@ const DayRoutine = ({ day, updateRoutine }: Props) => {
             <AddExerciseModal isVisible={modalCreateVisible} onClose={onModalCreateClose}>
             </AddExerciseModal>
 
-            {modalDayHandlerVisible && (<DayHandlerModal day={day} onClose={onModalDayHandlerClose}>
+            {modalDayHandlerVisible && (<DayHandlerModal day={day} onClose={onModalDayHandlerClose} deleteExercise={deleteExercise}>
             </DayHandlerModal>)}
         </View>
     )
